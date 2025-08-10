@@ -38,8 +38,11 @@ def play_game():
     print("It's " + player + "'s turn.")
     # `input` asks the user to type in a string
     # We then need to convert it to a number using `int`
-    row = int(input("Enter a row: "))
-    column = int(input("Enter a column: "))
+    valid_input = False
+    while not valid_input:
+      row = int(input("Enter a row: "))
+      column = int(input("Enter a column: "))
+      valid_input = check_input_valid(board, row, column)
     board = make_move(board, row, column, player)
     if player == "X":
       player = "O"
@@ -67,6 +70,13 @@ def get_cells(board, coord_1, coord_2, coord_3):
     board[coord_2[0]][coord_2[1]],
     board[coord_3[0]][coord_3[1]]
   ]
+  
+# This function will check the chosen cell has not already been selected
+def check_input_valid(board, row, column):
+  if board[row][column] == ".":
+    return True
+  print("Invalid selection. Please choose an empty tile!")
+  return False
 
 # This function will check if the group is fully placed with player marks, no
 # empty spaces.
@@ -105,7 +115,12 @@ def is_game_over(board):
       if are_all_cells_the_same(board, group[0], group[1], group[2]):
         return True # We found a winning row!
         # Note that return also stops the function
-  return False # If we get here, we didn't find a winning row
+  # End game if all tiles occupied
+  for row in board:
+    for column in row:
+      if column == ".":
+        return False # If we get here the game is not yet finished
+  return True # If we get here, we didn't find a winning row, but the board is completely filled
 
 # And test it out:
 
